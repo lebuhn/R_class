@@ -1,0 +1,122 @@
+---
+title: "Creating_functions"
+format: 
+     html:
+       toc: true
+       code-fold: true
+       embed-resources: true
+
+---
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+# Temperature conversion
+
+```{r}
+airtemps <- c(212, 30.3, 78, 32)
+celsius1 <- (airtemps[1] - 32) * 5/9
+celsius2 <- (airtemps[2] - 32) * 5/9
+celsius3 <- (airtemps[3] - 32) * 5/9 
+```
+
+Convert fahrenheit to celsius ( is for arguments) {is for funcitonal code. always good to use an explict return call}
+
+```{r}
+convert_f_to_c <- function(fahr) {
+  celsius <- (fahr - 32) * 5/9
+  return(celsius)
+}
+
+celsius1a <- convert_f_to_c(airtemps[1])
+convert_f_to_c(airtemps)
+
+```
+ 
+##Create a new code chunk that converts c to f
+
+```{r}
+convert_c_to_f <- function(cels) {
+  fahrenheit <- (cels * 9/5) + 32
+  return(fahrenheit)
+}
+
+
+fahr_1 <-convert_f_to_c(airtemps)
+celsius_1 <-convert_c_to_f(fahr_1)
+```
+
+Returning multiple values.  Tell it how to return it (list) and identify the variable names and values
+
+
+
+
+```{r}
+
+convert_temps <- function(fahr) {
+  celsius <- (fahr - 32) * 5/9
+  kelvin <- celsius + 273.15
+  return(list(f = fahr, c = celsius, k = kelvin))
+}
+
+t_vec <- c(-100, -40, 0, 32, 98.6, 212)
+
+#convert to data.frame
+temps_df <- data.frame(convert_temps(t_vec))
+```
+
+letting user input value and add the ability for switching between F and C
+
+```{r}
+
+convert_temps2 <- function(temp, unit = 'F') {
+  
+  ### Error checking:
+  unit <- toupper(unit)  ### try to anticipate common mistakes!
+  if(!unit %in% c('F', 'C')) stop('The units must be either F or C!')
+  
+  if(unit == 'F') {
+    fahr <- temp
+    celsius <- convert_f_to_c(fahr)
+  } else {
+    celsius <- temp
+    fahr <- convert_c_to_f(celsius)
+  }
+  kelvin <- celsius + 273.15
+  
+  out_df <- data.frame(fahr, celsius, kelvin)
+  return(out_df)
+}
+
+#. good practice - df tag indicates that it is a dataframe
+c_temps_df <- convert_temps2(temp = t_vec, unit = 'C')
+f_temps_df <- convert_temps2(t_vec, 'F')
+
+identical(f_temps_df, temps_df)
+
+
+
+```
+
+
+Functions in tidyverse 
+returns the same type of data frame that is input
+create something that evaluates whter it is hot or cold
+
+```{r}
+calc_hotcold <- function (df, thresh = 70) {
+   if (!'fahr' %in% names(df)) stop('The data frame must contain a column that is called fahr')
+  out_df <- df%>% 
+    mutate(hotcold = if_else)
+} 
+```
+
+
+```{r}
+
+
+```
+
+   
